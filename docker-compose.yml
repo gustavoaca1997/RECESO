@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  db:
+    image: percona:latest
+    environment:
+      #schema
+      MYSQL_DATABASE: 'recommenderdb'
+      #password for the root user
+      MYSQL_ROOT_PASSWORD: 'datatourisme'
