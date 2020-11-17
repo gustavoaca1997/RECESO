@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  db:
+    ports:
+      #host_port:container_port
+      - "3306:3306"

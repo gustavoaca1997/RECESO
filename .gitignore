@@ -89,3 +89,6 @@ fabric.properties
 target/
 
 src/main/resources/individuals.ttl
+
+*.json
+output/
