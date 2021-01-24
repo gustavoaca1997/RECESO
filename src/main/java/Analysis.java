@@ -105,7 +105,6 @@ public class Analysis {
         coordinates.put("Paris", Arrays.asList(48.8589507, 2.2770196));
         coordinates.put("Lyon", Arrays.asList(45.7580539, 4.7650805));
         coordinates.put("Niza", Arrays.asList(43.709622, 7.262428));
-        coordinates.put("Strasbourg", Arrays.asList(48.574481, 7.753845));
 
         createAndAddUsers();
 
@@ -114,11 +113,7 @@ public class Analysis {
             User user = users.get(i);
             List<Double> sample = samples.get(i);
 
-            System.out.println("\n-----------------------------------------------" +
-                    "\n-----------------------------------------------" +
-                    "\n------------------------------------------------" +
-                    "\nUser: " + user.getUsername() +
-                    "\n\tpreferences: " + sample);
+            System.out.print(" \\hline $T_" + (i+1) + "$ ");
 
             Set<OntClass> recommendedClasses = new HashSet<>();
             double totalAvgPredictedPreference = 0D;
@@ -140,7 +135,9 @@ public class Analysis {
 
             // For each possible context factors combination, visit two times each location
             for (int k=0; k<2; k++) {
-                System.out.println("epoch: " + k);
+                System.out.print(" & " + (k+1) + " ");
+
+                int context_idx = 0;
                 for (String d : day) {
                     for (String w : weather) {
                         for (String t : time) {
@@ -152,13 +149,19 @@ public class Analysis {
                             fullfillment.put(d, 1D);
                             fullfillment.put(t, 1D);
 
-                            System.out.println(String.format("\n\t-----------------------------------------------" +
-                                    "\n\t------------------------------------------------" +
-                                    "\n\tContexto: %s %s %s", w, d, t));
+                            if (context_idx > 0) {
+                                System.out.print(" & ");
+                            }
+                            context_idx += 1;
+                            System.out.print(String.format(" & \\scriptsize{%s} ", w));
 
+                            int location_idx = 0;
                             for (Map.Entry<String, List<Double>> entry : coordinates.entrySet()) {
-                                System.out.println("\n\t\t------------------------------------------------" +
-                                        "\n\t\t" + entry.getKey());
+                                if (location_idx>0) {
+                                    System.out.print(" & & ");
+                                }
+                                location_idx += 1;
+                                System.out.print(" & \\scriptsize{" + entry.getKey() + "} ");
 
                                 // Get recommended individuals
                                 List<Double> c = entry.getValue();
@@ -167,9 +170,38 @@ public class Analysis {
                                         recommenderSession
                                                 .getRecommendedIndividuals(fullfillment, c.get(0), c.get(1), distance);
 
-                                System.out.print("\n");
-                                recommendations
-                                        .forEach(r -> System.out.println("\t\t\t" + r));
+                                int r_idx=0;
+                                for (RDFResult r : recommendations) {
+                                    if (r_idx > 0) {
+                                        String contextFactorStr = "";
+                                        if (location_idx == 1 && r_idx == 1) contextFactorStr = d;
+                                        else if (location_idx == 1 && r_idx == 2) contextFactorStr = t;
+                                        System.out.print(String.format(" & & \\scriptsize{%s} & ", contextFactorStr));
+                                    }
+                                    System.out.print(" & " + r.toLatexItem());
+                                    r_idx += 1;
+
+                                    System.out.print(" \\\\ ");
+
+                                    if (r_idx == recommendations.size()) {
+                                        int first_col=4;
+                                        if (location_idx == coordinates.size()) {
+                                            first_col -= 1;
+
+                                            if (context_idx == 24) {
+                                                first_col -= 1;
+
+                                                if (k == 1) {
+                                                    first_col -= 1;
+                                                }
+                                            }
+                                        }
+
+                                        System.out.println(String.format(" \\cline{%s-11} ", first_col));
+                                    } else {
+                                        System.out.println(" \\cline{5-11} ");
+                                    }
+                                }
 
                                 if (!recommendations.isEmpty()) {
                                     count += 1;
@@ -211,11 +243,11 @@ public class Analysis {
                                             .get() / recommendations.size();
                                     totalAvgDistance += avgDistance;
 
-                                    System.out.println(String.format(
-                                            "\n\t\t\tavg preference: %s, avg activation: %s, avg aging: %s, " +
-                                                    "avg novelty: %s, avg distance: %s\n",
-                                            avgPredictedPreference, avgActivation, avgAging, avgNovelty, avgDistance
-                                    ));
+//                                    System.out.println(String.format(
+//                                            "\n\t\t\t\\item $avg_{pref_c}$: $%s$, $avg_{act_c}$: $%s$, $avg_{\\eta_p}: $%s$, " +
+//                                                    "$avg novelty: %s, avg distance: %s\n",
+//                                            avgPredictedPreference, avgActivation, avgAging, avgNovelty, avgDistance
+//                                    ));
 
                                     //recommenderSession.updateAndPropagate(topResult.getUriClass(), 1D);
                                 }
@@ -232,10 +264,16 @@ public class Analysis {
                 }
             }
 
-            System.out.println(String.format("\n\tavg avg preference: %s, avg avg activation %s," +
-                            "avg avg aging: %s, avg avg novelty: %s, avg avg distance %s",
-                    totalAvgPredictedPreference/count, totalAvgActivation/count, totalAvgAging/count,
-                    totalAvgNovelty/(count-1), totalAvgDistance/count));
+//            System.out.println("\\subsection{Resumen}");
+//            System.out.println(String.format("\n\t\\begin{itemize}" +
+//                            "\\item $avg(pref_R)$: $%s$\n" +
+//                            "\\item $avg(act_R)$: $%s$\n" +
+//                            "\\item $avg(\\eta_R)$: $%s$\n" +
+//                            "\\item $avg(nov_R)$: $%s$\n" +
+//                            "\\item $avg(dist_R)$ $%s$\n" +
+//                            "\n\t\\end{itemize}\n",
+//                    totalAvgPredictedPreference/count, totalAvgActivation/count, totalAvgAging/count,
+//                    totalAvgNovelty/(count-1), totalAvgDistance/count));
             recommenderSession.exportJSON(String.format("%s_dump.json", i));
             recommenderSession.close();
         }

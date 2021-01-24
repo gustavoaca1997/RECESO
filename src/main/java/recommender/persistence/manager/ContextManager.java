@@ -7,6 +7,7 @@ import recommender.persistence.entity.ContextFactor;
 import recommender.persistence.entity.Relevance;
 import recommender.persistence.entity.User;
 
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -27,7 +28,7 @@ public class ContextManager {
             try {
                 contextFactor = getContextFactor(contextFactor.getName());
                 return contextFactor.getCid();
-            } catch (NoSuchElementException e) {
+            } catch (NoSuchElementException | NoResultException e) {
                 tx = session.beginTransaction();
 
                 contextFactor.setRelevanceSet(new HashSet<>());

@@ -61,9 +61,15 @@ public class RecommenderSession implements Closeable {
     private final Session session;
 
     // TODO: Test differente parameters.
-    public static double preferenceCoefficient = 1D/4;
-    public static double activationCoefficient = 1D/4;
-    public static double agingCoefficient = 17D/36D;
+//    public static double preferenceCoefficient = 1D/4;
+//    public static double activationCoefficient = 1D/4;
+//    public static double agingCoefficient = 17D/36D;
+//    public static double distanceCoefficient = -1D/36D;
+//    public static double distance = 8D;
+
+    public static double preferenceCoefficient = 13D/36;
+    public static double activationCoefficient = 13D/36;
+    public static double agingCoefficient = 1D/4;
     public static double distanceCoefficient = -1D/36D;
     public static double distance = 8D;
 
