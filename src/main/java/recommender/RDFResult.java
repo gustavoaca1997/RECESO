@@ -24,7 +24,7 @@ public class RDFResult {
     public Double score() {
         return RecommenderSession.preferenceCoefficient * predictedPreference +
                 RecommenderSession.activationCoefficient * activation +
-                RecommenderSession.agingCoefficient * agingValue +
+                RecommenderSession.agingCoefficient * 1D + // Because Bahramian et al don't use aging.
                 RecommenderSession.distanceCoefficient * distance/RecommenderSession.distance;
     }
 

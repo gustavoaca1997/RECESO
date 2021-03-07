@@ -264,16 +264,16 @@ public class Analysis {
                 }
             }
 
-//            System.out.println("\\subsection{Resumen}");
-//            System.out.println(String.format("\n\t\\begin{itemize}" +
-//                            "\\item $avg(pref_R)$: $%s$\n" +
-//                            "\\item $avg(act_R)$: $%s$\n" +
-//                            "\\item $avg(\\eta_R)$: $%s$\n" +
-//                            "\\item $avg(nov_R)$: $%s$\n" +
-//                            "\\item $avg(dist_R)$ $%s$\n" +
-//                            "\n\t\\end{itemize}\n",
-//                    totalAvgPredictedPreference/count, totalAvgActivation/count, totalAvgAging/count,
-//                    totalAvgNovelty/(count-1), totalAvgDistance/count));
+            System.out.println("\\subsection{Resumen}");
+            System.out.println(String.format("\n\t\\begin{itemize}" +
+                            "\\item $avg(pref_R)$: $%s$\n" +
+                            "\\item $avg(act_R)$: $%s$\n" +
+                            "\\item $avg(\\eta_R)$: $%s$\n" +
+                            "\\item $avg(nov_R)$: $%s$\n" +
+                            "\\item $avg(dist_R)$ $%s$\n" +
+                            "\n\t\\end{itemize}\n",
+                    totalAvgPredictedPreference/count, totalAvgActivation/count, totalAvgAging/count,
+                    totalAvgNovelty/(count-1), totalAvgDistance/count));
             recommenderSession.exportJSON(String.format("%s_dump.json", i));
             recommenderSession.close();
         }
